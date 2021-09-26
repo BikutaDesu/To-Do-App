@@ -8,7 +8,7 @@ import 'moment/locale/pt-br';
 import styles from './style';
 
 const Task = props => {
-  const [isTaskDone, setTaskDone] = useState(false);
+  const [isTaskDone, setTaskDone] = useState(props.doneAt !== null);
 
   const descTaskDoneStyle = !isTaskDone
     ? null
@@ -25,6 +25,7 @@ const Task = props => {
         <CheckBox
           style={styles.doneCheckbox}
           fillColor="#4D7031"
+          isChecked={props.doneAt ? true : false}
           onPress={() => {
             setTaskDone(!isTaskDone);
             props.toggleTask(props.id);

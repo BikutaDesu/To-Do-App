@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, ImageBackground} from 'react-native';
 
 import moment from 'moment';
@@ -8,12 +8,13 @@ import todayImage from '../../../assets/imgs/today.jpg';
 import styles from './styles';
 
 import Task from '../../components/Task';
-import {FlatList} from 'react-native-gesture-handler';
+import {FlatList, TouchableOpacity} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import commonStyles from '../../commonStyles';
 
 const TaskList = props => {
-  const today = moment().locale('pt-br').format('ddd, D [de] MMMM');
-
   const [state, setState] = useState({
+    showDoneTasks: true,
     tasks: [
       {
         id: Math.random(),
@@ -60,6 +61,13 @@ const TaskList = props => {
     ],
   });
 
+  const today = moment().locale('pt-br').format('ddd, D [de] MMMM');
+
+  const toggleFilter = () => {
+    const showDoneTasks = !state.showDoneTasks;
+    setState({showDoneTasks, tasks: state.tasks});
+  };
+
   const toggleTask = taskId => {
     const tasks = [...state.tasks];
     tasks.forEach(task => {
@@ -68,12 +76,21 @@ const TaskList = props => {
       }
     });
 
-    setState({tasks});
+    setState({tasks, showDoneTasks: state.showDoneTasks});
   };
 
   return (
     <View style={styles.container}>
       <ImageBackground style={styles.background} source={todayImage}>
+        <View style={styles.iconBar}>
+          <TouchableOpacity onPress={toggleFilter}>
+            <Icon
+              name={state.showDoneTasks ? 'eye' : 'eye-slash'}
+              size={20}
+              color={commonStyles.colors.secondary}
+            />
+          </TouchableOpacity>
+        </View>
         <View style={styles.titleBar}>
           <Text style={styles.title}>Hoje</Text>
           <Text style={styles.subtitle}>{today}</Text>
@@ -81,7 +98,9 @@ const TaskList = props => {
       </ImageBackground>
       <View style={styles.taskList}>
         <FlatList
-          data={state.tasks}
+          data={state.tasks.filter(task =>
+            state.showDoneTasks ? task.doneAt === null : true,
+          )}
           keyExtractor={item => `${item.id}`}
           renderItem={({item}) => <Task {...item} toggleTask={toggleTask} />}
         />

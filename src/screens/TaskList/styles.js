@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import commonStyles from '../../commonStyles';
 
 export default StyleSheet.create({
@@ -28,5 +28,11 @@ export default StyleSheet.create({
     fontSize: 16,
     marginLeft: 20,
     marginBottom: 30,
+  },
+  iconBar: {
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    justifyContent: 'flex-end',
+    marginTop: Platform.OS === 'ios' ? 40 : 10,
   },
 });
